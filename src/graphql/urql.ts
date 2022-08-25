@@ -1,16 +1,8 @@
 import { ClientOptions, createClient } from 'solid-urql'
 
-const { VITE_GRAFBASE_API_URL, VITE_GRAFBASE_API_KEY } = import.meta.env
-
 export const urqlClientBaseConfig: ClientOptions = {
-  url: VITE_GRAFBASE_API_URL,
-  requestPolicy: 'cache-and-network',
-  fetchOptions: () => ({
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': VITE_GRAFBASE_API_KEY
-    }
-  })
+  url: '/api/graphql',
+  requestPolicy: 'cache-and-network'
 }
 
 export const urqlClient = createClient({
