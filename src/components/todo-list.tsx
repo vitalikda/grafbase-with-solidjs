@@ -1,9 +1,14 @@
 import debounce from 'lodash.debounce'
-import { For } from 'solid-js'
+import { For, Match, Switch } from 'solid-js'
 import { createMutation } from 'solid-urql'
 
 import { Dropdown, DropdownItem } from '~/components/dropdown'
-import { DotsVerticalIcon, PencilIcon, TrashIcon } from '~/components/icons'
+import {
+  DotsVerticalIcon,
+  PencilIcon,
+  SpinnerIcon,
+  TrashIcon
+} from '~/components/icons'
 import TodoItem from '~/components/todo-item'
 import TodoItemCreate from '~/components/todo-item-create'
 import {
@@ -12,6 +17,8 @@ import {
   TodoListUpdateDocument
 } from '~/graphql/schema'
 import getColor from '~/utils/get-color'
+
+const TodoListDeleteContext = { additionalTypenames: ['TodoList', 'Todo'] }
 
 const TodoList = (props: TodoListFragment) => {
   const { id, title, todos } = props
@@ -25,7 +32,7 @@ const TodoList = (props: TodoListFragment) => {
   }, 500)
 
   return (
-    <div hidden={deleting().fetching} class="space-y-4 flex-1 min-w-[300px]">
+    <div class="space-y-4 flex-1 min-w-[300px]">
       <div
         class="flex justify-between border-b-2"
         title={title || ''}
@@ -43,31 +50,40 @@ const TodoList = (props: TodoListFragment) => {
           />
         </h2>
         <div class="relative z-20">
-          <Dropdown
-            trigger={
-              <DotsVerticalIcon class="w-5 h-5 text-gray-400 transition hover:text-red-400" />
-            }
-          >
-            <DropdownItem>
-              <button
-                onClick={() => setTimeout(() => inputRef.focus(), 100)}
-                class="flex items-center w-full px-2 py-2 text-sm rounded-md group hover:bg-emerald-200 hover:dark:bg-emerald-700"
+          <Switch>
+            <Match when={deleting().fetching}>
+              <SpinnerIcon />
+            </Match>
+            <Match when={!deleting().fetching}>
+              <Dropdown
+                trigger={
+                  <DotsVerticalIcon class="w-5 h-5 text-gray-400 transition hover:text-red-400" />
+                }
               >
-                <PencilIcon class="w-5 h-5 mr-3" aria-hidden="true" />
-                Rename
-              </button>
-            </DropdownItem>
-            <DropdownItem>
-              <button
-                disabled={deleting().fetching}
-                onClick={() => todoListDelete({ id })}
-                class="flex items-center w-full px-2 py-2 text-sm rounded-md group hover:bg-emerald-200 hover:dark:bg-emerald-700"
-              >
-                <TrashIcon class="w-5 h-5 mr-3" aria-hidden="true" />
-                Delete
-              </button>
-            </DropdownItem>
-          </Dropdown>
+                <DropdownItem>
+                  <button
+                    onClick={() => setTimeout(() => inputRef.focus(), 100)}
+                    class="flex items-center w-full px-2 py-2 text-sm rounded-md group hover:bg-emerald-200 hover:dark:bg-emerald-700"
+                  >
+                    <PencilIcon class="w-5 h-5 mr-3" aria-hidden="true" />
+                    Rename
+                  </button>
+                </DropdownItem>
+                <DropdownItem>
+                  <button
+                    disabled={deleting().fetching}
+                    onClick={() =>
+                      todoListDelete({ id }, TodoListDeleteContext)
+                    }
+                    class="flex items-center w-full px-2 py-2 text-sm rounded-md group hover:bg-emerald-200 hover:dark:bg-emerald-700"
+                  >
+                    <TrashIcon class="w-5 h-5 mr-3" aria-hidden="true" />
+                    Delete
+                  </button>
+                </DropdownItem>
+              </Dropdown>
+            </Match>
+          </Switch>
         </div>
       </div>
       <div class="space-y-4">

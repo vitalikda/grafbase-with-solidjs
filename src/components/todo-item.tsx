@@ -2,8 +2,10 @@ import debounce from 'lodash.debounce'
 import { createSignal } from 'solid-js'
 import { createMutation } from 'solid-urql'
 
-import { TrashIcon } from '~/components/icons'
+import { SpinnerIcon, TrashIcon } from '~/components/icons'
 import { TodoDeleteDocument, TodoUpdateDocument } from '~/graphql/schema'
+
+const TodoDeleteContext = { additionalTypenames: ['TodoList'] }
 
 type Props = {
   id: string
@@ -31,7 +33,6 @@ const TodoItem = (props: Props) => {
 
   return (
     <div
-      hidden={deleting().fetching}
       class={`relative p-3 overflow-hidden border rounded-md ${
         completed()
           ? 'bg-emerald-200 dark:bg-emerald-800 border-emerald-600'
@@ -69,9 +70,13 @@ const TodoItem = (props: Props) => {
             aria-label="Delete todo"
             disabled={deleting().fetching}
             class="text-gray-400 transition hover:text-red-400"
-            onClick={() => todoDelete({ id })}
+            onClick={() => todoDelete({ id }, TodoDeleteContext)}
           >
-            <TrashIcon class="w-4 h-4" />
+            {deleting().fetching ? (
+              <SpinnerIcon />
+            ) : (
+              <TrashIcon class="w-4 h-4" />
+            )}
           </button>
         </div>
         <div class="flex justify-between mt-2 text-sm">
