@@ -3,6 +3,8 @@ import { createMutation } from 'solid-urql'
 
 import { TodoCreateDocument } from '~/graphql/schema'
 
+const TodoCreateContext = { additionalTypenames: ['Todo'] }
+
 const TodoItemCreate = ({ todoListId }: { todoListId: string }) => {
   const [title, setTitle] = createSignal('')
 
@@ -12,7 +14,7 @@ const TodoItemCreate = ({ todoListId }: { todoListId: string }) => {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        createTodo({ title: title(), todoListId })
+        createTodo({ title: title(), todoListId }, TodoCreateContext)
         setTitle('')
       }}
       class="p-3 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-800"
@@ -21,8 +23,8 @@ const TodoItemCreate = ({ todoListId }: { todoListId: string }) => {
         <input
           required
           type="text"
-          name="title"
           placeholder="Todo title"
+          value={title()}
           onInput={(e) => setTitle(e.currentTarget.value)}
           class="block w-full px-2 py-1 text-sm placeholder-gray-400 border border-gray-300 rounded-md bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
