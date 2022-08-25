@@ -4,6 +4,7 @@ import MoonIcon from './moon-icon'
 import DotsVerticalIcon from './dots-vertical-icon'
 import PencilIcon from './pencil-icon'
 import TrashIcon from './trash-icon'
+import SpinnerIcon from './spinner-icon'
 
 export {
   GrafbaseLogo,
@@ -11,5 +12,6 @@ export {
   MoonIcon,
   DotsVerticalIcon,
   PencilIcon,
-  TrashIcon
+  TrashIcon,
+  SpinnerIcon
 }
