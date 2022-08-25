@@ -14,8 +14,9 @@ const TodoListCreate = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        createTodoList({ title: title() }, TodoListCreateContext)
-        setTitle('')
+        createTodoList({ title: title() }, TodoListCreateContext).then(() =>
+          setTitle('')
+        )
       }}
       class="h-fit rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-800 p-3 space-y-3 min-w-[300px]"
     >

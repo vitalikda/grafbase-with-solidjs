@@ -14,8 +14,9 @@ const TodoItemCreate = ({ todoListId }: { todoListId: string }) => {
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        createTodo({ title: title(), todoListId }, TodoCreateContext)
-        setTitle('')
+        createTodo({ title: title(), todoListId }, TodoCreateContext).then(() =>
+          setTitle('')
+        )
       }}
       class="p-3 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-800"
     >
