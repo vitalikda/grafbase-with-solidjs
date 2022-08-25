@@ -1,4 +1,4 @@
-import { Component, For, Match, Switch } from 'solid-js'
+import { Component, createMemo, For, Match, Switch } from 'solid-js'
 import { createQuery, Provider as GraphQLProvider } from 'solid-urql'
 
 import Layout from '~/components/layout'
@@ -9,6 +9,9 @@ import { urqlClient } from '~/graphql/urql'
 
 const App: Component = () => {
   const [data, state] = createQuery({ query: TodoListsDocument })
+  const todoListCollection = createMemo(
+    () => data()?.todoListCollection?.edges?.slice().reverse() ?? []
+  )
 
   return (
     <Layout>
@@ -17,7 +20,7 @@ const App: Component = () => {
         <Match when={state().error}>{JSON.stringify(state().error)}</Match>
         <Match when={data()?.todoListCollection}>
           <div class="flex gap-6">
-            <For each={data()?.todoListCollection?.edges?.slice().reverse()}>
+            <For each={todoListCollection()}>
               {(list) => !!list?.node && <TodoList {...list.node} />}
             </For>
             <TodoListCreate />
